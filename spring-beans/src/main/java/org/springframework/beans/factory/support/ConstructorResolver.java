@@ -151,6 +151,7 @@ class ConstructorResolver {
 			// Take specified constructors, if any.
 			Constructor<?>[] candidates = chosenCtors;
 			if (candidates == null) {
+				// 这里的 BeanClass 指的就是前面合并阶段通过 String 转换为 Class 的 Bean Class
 				Class<?> beanClass = mbd.getBeanClass();
 				try {
 					candidates = (mbd.isNonPublicAccessAllowed() ?
@@ -184,6 +185,7 @@ class ConstructorResolver {
 					try {
 						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, paramTypes.length);
 						if (paramNames == null) {
+							// 参数名的发现器 注意：Java8之前接口上的参数是取不到的
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
 							if (pnd != null) {
 								paramNames = pnd.getParameterNames(candidate);
@@ -812,6 +814,8 @@ class ConstructorResolver {
 			}
 			return injectionPoint;
 		}
+
+		// 默认情况下 是按照类型注入的
 		return this.beanFactory.resolveDependency(
 				new DependencyDescriptor(param, true), beanName, autowiredBeanNames, typeConverter);
 	}

@@ -149,6 +149,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private final List<StringValueResolver> embeddedValueResolvers = new LinkedList<>();
 
 	/** BeanPostProcessors to apply in createBean */
+	// 保证Aware 回调的顺序；5.1 开始是 new CopyOnWriteArrayList<>()的实例，保证线程安全和只读
 	private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
 	/** Indicates whether any InstantiationAwareBeanPostProcessors have been registered */
@@ -289,6 +290,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			try {
+				// 合并 BeanDefinition 最终返回 RootBeanDefinition
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
@@ -309,6 +311,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
+							// Bean Class 加载阶段的入口
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {
@@ -973,6 +976,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * in ancestors as well.
 	 * @param name the name of the bean to retrieve the merged definition for
 	 * (may be an alias)
+	 *
+	 * 合并存在父子关系的 Bean
 	 * @return a (potentially merged) RootBeanDefinition for the given bean
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
 	 * @throws BeanDefinitionStoreException in case of an invalid bean definition
@@ -1242,8 +1247,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			if (mbd == null) {
+				// 如果定义的 Bean 没有父类 Bean 直接创建为 RootBeanDefinition
 				if (bd.getParentName() == null) {
 					// Use copy of given root bean definition.
+					// 如果已经创建的是 RootBeanDefinition 则拷贝
 					if (bd instanceof RootBeanDefinition) {
 						mbd = ((RootBeanDefinition) bd).cloneBeanDefinition();
 					}
@@ -1257,11 +1264,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					try {
 						String parentBeanName = transformedBeanName(bd.getParentName());
 						if (!beanName.equals(parentBeanName)) {
+							// 递归
 							pbd = getMergedBeanDefinition(parentBeanName);
 						}
 						else {
 							BeanFactory parent = getParentBeanFactory();
 							if (parent instanceof ConfigurableBeanFactory) {
+								// 这里指的是多层级关系的 Bean 定义
 								pbd = ((ConfigurableBeanFactory) parent).getMergedBeanDefinition(parentBeanName);
 							}
 							else {
@@ -1276,7 +1285,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 								"Could not resolve parent bean definition '" + bd.getParentName() + "'", ex);
 					}
 					// Deep copy with overridden values.
+					// 将合并后的 Bean 由 GenericBeanDefinition 转化为 RootBeanDefinition
 					mbd = new RootBeanDefinition(pbd);
+					// 添加子类定义的属性到 BeanDefinition 中，
+					// 如果父类里面有对应的属性而子类没有，直接继承父类；
+					// 如果子类里面的属性有和父类相同的属性，则子类属性覆盖父类属性
 					mbd.overrideFrom(bd);
 				}
 
@@ -1364,6 +1377,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
 			}
+			// Java 的 Security 验证，在ClassLoader 加载class的时候，需要一个安全认证，通常我们类的加载都是默认有权限的
 			if (System.getSecurityManager() != null) {
 				return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () ->
 					doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
@@ -1388,6 +1402,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {
 
+		// 获取类加载器 AppClassLoader
 		ClassLoader beanClassLoader = getBeanClassLoader();
 		ClassLoader classLoaderToUse = beanClassLoader;
 		if (!ObjectUtils.isEmpty(typesToMatch)) {

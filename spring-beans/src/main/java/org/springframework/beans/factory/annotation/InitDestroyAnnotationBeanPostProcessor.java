@@ -132,7 +132,7 @@ public class InitDestroyAnnotationBeanPostProcessor
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		LifecycleMetadata metadata = findLifecycleMetadata(bean.getClass());
 		try {
-			// PostConstruct 的回调是在Bean 初始化阶段已经完成了
+			// PostConstruct 的回调是在 Bean 初始化阶段已经完成了
 			metadata.invokeInitMethods(bean, beanName);
 		}
 		catch (InvocationTargetException ex) {
