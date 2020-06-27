@@ -44,10 +44,10 @@ package org.springframework.beans.factory;
 public interface SmartInitializingSingleton {
 
 	/**
-	 * Invoked right at the end of the singleton pre-instantiation phase,
-	 * with a guarantee that all regular singleton beans have been created
+	 * Invoked right at the end of the singleton pre-instantiation phase,在单例预实例化阶段结束时立即调用
+	 * with a guarantee that all regular singleton beans have been created 确保已经创建了所有常规单例bean
 	 * already. {@link ListableBeanFactory#getBeansOfType} calls within
-	 * this method won't trigger accidental side effects during bootstrap.
+	 * this method won't trigger accidental side effects during bootstrap. 在引导过程中，此方法内的调用不会触发意外的副作用
 	 * <p><b>NOTE:</b> This callback won't be triggered for singleton beans
 	 * lazily initialized on demand after {@link BeanFactory} bootstrap,
 	 * and not for any other bean scope either. Carefully use it for beans
