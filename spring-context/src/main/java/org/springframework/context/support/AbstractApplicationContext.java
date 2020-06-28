@@ -1034,6 +1034,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 
 			// Destroy all cached singletons in the context's BeanFactory.
+			// 销毁容器内的 Bean 实例
 			destroyBeans();
 
 			// Close the state of this context itself.

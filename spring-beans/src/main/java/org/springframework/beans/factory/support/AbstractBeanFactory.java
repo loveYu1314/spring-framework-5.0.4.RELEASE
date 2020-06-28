@@ -1073,6 +1073,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 	}
 
+	/**
+	 * Bean 实例在容器中的销毁
+	 * @param beanName the name of the bean definition
+	 * @param beanInstance the bean instance to destroy
+	 */
 	@Override
 	public void destroyBean(String beanName, Object beanInstance) {
 		destroyBean(beanName, beanInstance, getMergedLocalBeanDefinition(beanName));
