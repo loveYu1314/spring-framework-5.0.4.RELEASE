@@ -40,6 +40,7 @@ import org.springframework.lang.Nullable;
 public class GenericBeanDefinition extends AbstractBeanDefinition {
 
 	@Nullable
+	// 该属性设置 Bean 的父级 Bean 节点
 	private String parentName;
 
 

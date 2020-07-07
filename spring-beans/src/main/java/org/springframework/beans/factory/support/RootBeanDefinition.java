@@ -245,6 +245,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 
 
 	@Override
+	// RootBeanDefinition 是没有父级 Bean 节点的
 	public String getParentName() {
 		return null;
 	}
