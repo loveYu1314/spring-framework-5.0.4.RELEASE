@@ -603,6 +603,8 @@ class ConfigurationClassParser {
 						// process it as an @Configuration class
 						this.importStack.registerImport(
 								currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
+						// processImports 与 processConfigurationClass 形成递归调用，
+						// 实现多层次@Import标注 ConfigurationClass 的解析，并压栈（importStack字段）
 						processConfigurationClass(candidate.asConfigClass(configClass));
 					}
 				}

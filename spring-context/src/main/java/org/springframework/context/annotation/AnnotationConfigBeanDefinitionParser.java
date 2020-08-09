@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
 
 /**
  * Parser for the &lt;context:annotation-config/&gt; element.
+ * <context:annotation-config/> 的底层实现类
  *
  * @author Mark Fisher
  * @author Juergen Hoeller
@@ -45,6 +46,7 @@ public class AnnotationConfigBeanDefinitionParser implements BeanDefinitionParse
 		Object source = parserContext.extractSource(element);
 
 		// Obtain bean definitions for all relevant BeanPostProcessors.
+		// 解析 BeanDefinition 实例
 		Set<BeanDefinitionHolder> processorDefinitions =
 				AnnotationConfigUtils.registerAnnotationConfigProcessors(parserContext.getRegistry(), source);
 

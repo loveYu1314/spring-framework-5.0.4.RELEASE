@@ -73,6 +73,7 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.*;
  * <p>Registered by default when using {@code <context:annotation-config/>} or
  * {@code <context:component-scan/>}. Otherwise, may be declared manually as
  * with any other BeanFactoryPostProcessor.
+ * 默认被 XML 元素 <context:annotation-config/> 或 <context:component-scan/> 注册
  *
  * <p>This post processor is {@link Ordered#HIGHEST_PRECEDENCE} as it is important
  * that any {@link Bean} methods declared in Configuration classes have their
@@ -325,6 +326,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+			// 将 configClasses 注册为 Spring Bean
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 
@@ -392,7 +394,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			// nothing to enhance -> return immediately
 			return;
 		}
-
+		// CGLib 实现类，用于提升 @Configuration Class
 		ConfigurationClassEnhancer enhancer = new ConfigurationClassEnhancer();
 		for (Map.Entry<String, AbstractBeanDefinition> entry : configBeanDefs.entrySet()) {
 			AbstractBeanDefinition beanDef = entry.getValue();

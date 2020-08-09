@@ -46,6 +46,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Parser for the {@code <context:component-scan/>} element.
+ * <context:component-scan/> 的底层实现类
  *
  * @author Mark Fisher
  * @author Ramnivas Laddad
