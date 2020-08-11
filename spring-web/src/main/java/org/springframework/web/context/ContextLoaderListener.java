@@ -33,6 +33,8 @@ import javax.servlet.ServletContextListener;
  * @since 17.02.2003
  * @see #setContextInitializers
  * @see org.springframework.web.WebApplicationInitializer
+ *
+ * 监听 ServletContext 生命周期
  */
 public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
 

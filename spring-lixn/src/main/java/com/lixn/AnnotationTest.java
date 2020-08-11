@@ -1,5 +1,7 @@
 package com.lixn;
 
+import com.spring.circularDependency.BeanA;
+import com.spring.circularDependency.BeanB;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +15,12 @@ public class AnnotationTest {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.register(AnnotationTest.class);
+		context.register(BeanA.class,BeanB.class);
 		context.refresh();
-		AnnotationTest test = (AnnotationTest)context.getBean("test");
-		System.out.println(test);
+		context.close();
+//		BeanA beanA = (BeanA)context.getBean("beanA");
+//		BeanB beanB = (BeanB)context.getBean("beanB");
+//		System.out.println(beanA);
+//		System.out.println(beanB);
 	}
 }
